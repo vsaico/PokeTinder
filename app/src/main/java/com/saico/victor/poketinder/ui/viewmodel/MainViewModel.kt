@@ -12,31 +12,4 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainViewModel: ViewModel() {
 
-    val pokemonList = MutableLiveData<List<PokemonResponse>>()
-    val isLoading = MutableLiveData<Boolean>()
-
-    init {
-        getAllPokemons()
-    }
-
-    private fun getAllPokemons() {
-        isLoading.postValue(true)
-        CoroutineScope(Dispatchers.IO).launch {
-            isLoading.postValue(false)
-            val call = getRetrofit().create(PokemonApi::class.java).getPokemons()
-            if (call.isSuccessful) {
-                call.body()?.let {
-                    pokemonList.postValue(it.results)
-                }
-            }
-        }
-    }
-
-
-    private fun getRetrofit() : Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://pokeapi.co/api/v2/pokemon/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
 }
